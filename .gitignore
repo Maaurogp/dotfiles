@@ -1,0 +1,37 @@
+# Backups
+backups/*
+*.backup
+*.bak
+*~
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+.DS_Store
+
+# Información sensible
+docs/system_info.txt
+docs/ai_prompt.txt
+
+# Cache de ZSH
+.zsh_history
+.zcompdump*
+
+# Cache de Oh My Zsh
+config/.oh-my-zsh/cache/
+
+# Node modules (si usás algún script con Node)
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos personales
+*.personal
+*.private
