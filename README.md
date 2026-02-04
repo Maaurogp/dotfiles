@@ -84,3 +84,21 @@ MIT License - Usá, modificá y compartí libremente.
 ---
 
 Hecho con ❤️ para la comunidad de pentesting
+
+### 🖥️ Virtualización (QEMU/KVM)
+Configuración optimizada para Parrot OS en hardware antiguo:
+- **Hipervisor:** QEMU/KVM + virt-manager
+- **Red:** NAT (default) con modelo `e1000` para compatibilidad.
+- **Discos:** Bus `SATA` para sistemas antiguos (Metasploitable 2).
+
+**Comando de instalación rápida:**
+\`\`\`bash
+sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+sudo systemctl enable --now libvirtd
+sudo usermod -aG libvirt,kvm $USER
+\`\`\`
+
+**Crear VM Metasploitable 2 (Compatible):**
+\`\`\`bash
+sudo virt-install --name metasploitable2 --memory 512 --vcpus 1 --disk /var/lib/libvirt/images/metasploitable2.qcow2,bus=sata --import --os-variant linux2020 --network network=default,model=e1000 --graphics vnc,listen=0.0.0.0 --noautoconsole
+\`\`\`
