@@ -102,3 +102,20 @@ sudo usermod -aG libvirt,kvm $USER
 \`\`\`bash
 sudo virt-install --name metasploitable2 --memory 512 --vcpus 1 --disk /var/lib/libvirt/images/metasploitable2.qcow2,bus=sata --import --os-variant linux2020 --network network=default,model=e1000 --graphics vnc,listen=0.0.0.0 --noautoconsole
 \`\`\`
+
+## 📝 Neovim + NvChad
+
+Configuración moderna de Neovim con NvChad para desarrollo.
+
+### Instalación de Neovim 0.11.6:
+
+cd /tmp && wget https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.tar.gz && sudo rm -rf /opt/nvim-linux64 /opt/nvim-linux-x86_64 && sudo tar -xzf nvim-linux-x86_64.tar.gz -C /opt && sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/bin/nvim && nvim --version
+
+### Instalación de NvChad:
+
+rm -rf ~/.config/nvim ~/.local/share/nvim ~/.cache/nvim && git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
+
+**Nota:** Al abrir Neovim por primera vez, NvChad instalará plugins automáticamente (~1-2 minutos).
+
+---
+
