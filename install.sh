@@ -1,49 +1,41 @@
 #!/bin/bash
-
 # ============================================
 # 🔥 DOTFILES INSTALLER - q4qd_
 # ============================================
 # Instalación automática de dotfiles y optimizaciones
 # Compatible con Debian/Ubuntu/Parrot OS
 # ============================================
-
 set -e
-
 # Colores para output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-
 # Funciones de utilidad
 print_success() { echo -e "${GREEN}✅ $1${NC}"; }
-print_error() { echo -e "${RED}❌ $1${NC}"; }
-print_info() { echo -e "${BLUE}ℹ️  $1${NC}"; }
+print_error()   { echo -e "${RED}❌ $1${NC}"; }
+print_info()    { echo -e "${BLUE}ℹ️  $1${NC}"; }
 print_warning() { echo -e "${YELLOW}⚠️  $1${NC}"; }
-
 # Banner
 echo -e "${BLUE}"
 cat << "EOF"
 ╔═══════════════════════════════════════════╗
-║     🔥 DOTFILES INSTALLER - q4qd_        ║
-║  Instalación automática de BSPWM Setup   ║
+║   🔥 DOTFILES INSTALLER - q4qd_          ║
+║   Instalación automática de BSPWM Setup  ║
 ╚═══════════════════════════════════════════╝
 EOF
 echo -e "${NC}"
-
 # Verificar que se ejecuta como usuario normal (no root)
-if [ "$EUID" -eq 0 ]; then 
+if [ "$EUID" -eq 0 ]; then
     print_error "NO ejecutes este script como root. Usa tu usuario normal."
     exit 1
 fi
-
 # Verificar que estamos en el directorio correcto
 if [ ! -f "install.sh" ]; then
     print_error "Ejecutá este script desde el directorio dotfiles/"
     exit 1
 fi
-
 print_info "Iniciando instalación..."
 sleep 2
 
@@ -130,17 +122,14 @@ sudo apt install -y \
     libev-dev \
     libx11-xcb-dev \
     libxcb-glx0-dev
-
 print_success "Dependencias instaladas"
 
 # ============================================
 # 3. COMPILAR BSPWM, SXHKD, POLYBAR, PICOM
 # ============================================
 print_info "Compilando BSPWM, SXHKD, Polybar y Picom..."
-
 mkdir -p ~/tools
 cd ~/tools
-
 # BSPWM
 if [ ! -d "bspwm" ]; then
     git clone https://github.com/baskerville/bspwm.git
@@ -150,7 +139,6 @@ if [ ! -d "bspwm" ]; then
 else
     print_warning "BSPWM ya existe, saltando..."
 fi
-
 # SXHKD
 if [ ! -d "sxhkd" ]; then
     git clone https://github.com/baskerville/sxhkd.git
@@ -160,7 +148,6 @@ if [ ! -d "sxhkd" ]; then
 else
     print_warning "SXHKD ya existe, saltando..."
 fi
-
 # POLYBAR
 if [ ! -d "polybar" ]; then
     git clone --recursive https://github.com/polybar/polybar.git
@@ -171,7 +158,6 @@ if [ ! -d "polybar" ]; then
 else
     print_warning "Polybar ya existe, saltando..."
 fi
-
 # PICOM
 if [ ! -d "picom" ]; then
     git clone https://github.com/yshui/picom.git
@@ -182,14 +168,12 @@ if [ ! -d "picom" ]; then
 else
     print_warning "Picom ya existe, saltando..."
 fi
-
 cd ~/dotfiles
 
 # ============================================
 # 4. INSTALAR OH MY ZSH + POWERLEVEL10K
 # ============================================
 print_info "Instalando Oh My Zsh y Powerlevel10k..."
-
 # Para usuario actual
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -198,13 +182,11 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 else
     print_warning "Oh My Zsh ya instalado para $USER"
 fi
-
 # Cambiar shell a ZSH
 if [ "$SHELL" != "$(which zsh)" ]; then
     chsh -s $(which zsh)
     print_success "Shell cambiado a ZSH"
 fi
-
 # Para root
 print_info "Instalando Oh My Zsh para root..."
 sudo bash -c '
@@ -222,60 +204,45 @@ fi
 # 5. COPIAR CONFIGURACIONES
 # ============================================
 print_info "Copiando configuraciones..."
-
-# Crear directorios necesarios
 mkdir -p ~/.config/{bspwm,sxhkd,polybar,kitty,rofi}
-
-# Copiar configs
-cp -r config/bspwm/* ~/.config/bspwm/ 2>/dev/null || print_warning "No se encontró config de bspwm"
-cp -r config/sxhkd/* ~/.config/sxhkd/ 2>/dev/null || print_warning "No se encontró config de sxhkd"
-cp -r config/polybar/* ~/.config/polybar/ 2>/dev/null || print_warning "No se encontró config de polybar"
-cp -r config/kitty/* ~/.config/kitty/ 2>/dev/null || print_warning "No se encontró config de kitty"
-cp -r config/rofi/* ~/.config/rofi/ 2>/dev/null || print_warning "No se encontró config de rofi"
-cp config/.zshrc ~/.zshrc 2>/dev/null || print_warning "No se encontró .zshrc"
+cp -r config/bspwm/*    ~/.config/bspwm/    2>/dev/null || print_warning "No se encontró config de bspwm"
+cp -r config/sxhkd/*    ~/.config/sxhkd/    2>/dev/null || print_warning "No se encontró config de sxhkd"
+cp -r config/polybar/*  ~/.config/polybar/  2>/dev/null || print_warning "No se encontró config de polybar"
+cp -r config/kitty/*    ~/.config/kitty/    2>/dev/null || print_warning "No se encontró config de kitty"
+cp -r config/rofi/*     ~/.config/rofi/     2>/dev/null || print_warning "No se encontró config de rofi"
+cp config/.zshrc   ~/.zshrc   2>/dev/null || print_warning "No se encontró .zshrc"
 cp config/.p10k.zsh ~/.p10k.zsh 2>/dev/null || print_warning "No se encontró .p10k.zsh"
-
-# Permisos ejecutables
-chmod +x ~/.config/bspwm/bspwmrc 2>/dev/null
-chmod +x ~/.config/sxhkd/sxhkdrc 2>/dev/null
-chmod +x ~/.config/polybar/launch.sh 2>/dev/null
-chmod +x ~/.config/polybar/shapes/scripts/* 2>/dev/null
-
+chmod +x ~/.config/bspwm/bspwmrc                    2>/dev/null
+chmod +x ~/.config/sxhkd/sxhkdrc                    2>/dev/null
+chmod +x ~/.config/polybar/launch.sh                2>/dev/null
+chmod +x ~/.config/polybar/shapes/scripts/*         2>/dev/null
 print_success "Configuraciones copiadas"
 
 # ============================================
 # 6. DETECCIÓN AUTOMÁTICA DE INTERFACES DE RED
 # ============================================
 print_info "Detectando interfaces de red..."
-
-# Detectar interfaz Ethernet
 ETH_INTERFACE=$(ip link show | grep -E "^[0-9]:" | grep -v "lo:" | grep -E "en|eth" | head -1 | awk '{print $2}' | sed 's/://')
 if [ -z "$ETH_INTERFACE" ]; then
-    ETH_INTERFACE="enp0s25"  # Fallback
+    ETH_INTERFACE="enp0s25"
     print_warning "No se detectó interfaz Ethernet, usando fallback: $ETH_INTERFACE"
 else
     print_success "Interfaz Ethernet detectada: $ETH_INTERFACE"
 fi
-
-# Detectar interfaz WiFi
 WIFI_INTERFACE=$(ip link show | grep -E "^[0-9]:" | grep -v "lo:" | grep -E "wl" | head -1 | awk '{print $2}' | sed 's/://')
 if [ -z "$WIFI_INTERFACE" ]; then
-    WIFI_INTERFACE="wlp3s0"  # Fallback
+    WIFI_INTERFACE="wlp3s0"
     print_warning "No se detectó interfaz WiFi, usando fallback: $WIFI_INTERFACE"
 else
     print_success "Interfaz WiFi detectada: $WIFI_INTERFACE"
 fi
-
-# Actualizar configuración de Polybar con las interfaces detectadas
 if [ -f ~/.config/polybar/shapes/modules.ini ]; then
-    sed -i "s/interface = eth0/interface = $ETH_INTERFACE/g" ~/.config/polybar/shapes/modules.ini
+    sed -i "s/interface = eth0/interface = $ETH_INTERFACE/g"   ~/.config/polybar/shapes/modules.ini
     sed -i "s/interface = wlan0/interface = $WIFI_INTERFACE/g" ~/.config/polybar/shapes/modules.ini
     sed -i "s/interface = enp0s25/interface = $ETH_INTERFACE/g" ~/.config/polybar/shapes/modules.ini
     sed -i "s/interface = wlp3s0/interface = $WIFI_INTERFACE/g" ~/.config/polybar/shapes/modules.ini
     print_success "Polybar configurado con interfaces: $ETH_INTERFACE (Ethernet) y $WIFI_INTERFACE (WiFi)"
 fi
-
-# Actualizar script de ethernet_status
 if [ -f ~/.config/polybar/shapes/scripts/ethernet_status.sh ]; then
     sed -i "s/enp0s25/$ETH_INTERFACE/g" ~/.config/polybar/shapes/scripts/ethernet_status.sh
     print_success "Script ethernet_status actualizado"
@@ -285,14 +252,10 @@ fi
 # 7. OPTIMIZACIONES DEL SISTEMA
 # ============================================
 print_info "Aplicando optimizaciones del sistema..."
-
-# CPU Governor a performance
 sudo apt install -y cpufrequtils
 echo 'GOVERNOR="performance"' | sudo tee /etc/default/cpufrequtils
 sudo systemctl restart cpufrequtils 2>/dev/null || print_warning "cpufrequtils no se pudo reiniciar (normal en algunos sistemas)"
 print_success "CPU Governor configurado a 'performance'"
-
-# Swappiness a 10
 if ! grep -q "vm.swappiness=10" /etc/sysctl.conf; then
     echo "vm.swappiness=10" | sudo tee -a /etc/sysctl.conf
     sudo sysctl -p
@@ -300,34 +263,23 @@ if ! grep -q "vm.swappiness=10" /etc/sysctl.conf; then
 else
     print_warning "Swappiness ya configurado"
 fi
-
-# Deshabilitar servicios innecesarios
-sudo systemctl disable bluetooth 2>/dev/null || print_warning "Bluetooth no encontrado"
-sudo systemctl stop bluetooth 2>/dev/null || print_warning "Bluetooth no se pudo detener"
+sudo systemctl disable bluetooth   2>/dev/null || print_warning "Bluetooth no encontrado"
+sudo systemctl stop bluetooth      2>/dev/null || print_warning "Bluetooth no se pudo detener"
 sudo systemctl disable ModemManager 2>/dev/null || print_warning "ModemManager no encontrado"
-sudo systemctl stop ModemManager 2>/dev/null || print_warning "ModemManager no se pudo detener"
+sudo systemctl stop ModemManager   2>/dev/null || print_warning "ModemManager no se pudo detener"
 print_success "Servicios innecesarios deshabilitados"
-
-# Habilitar TRIM para SSD
 sudo systemctl enable fstrim.timer
 sudo systemctl start fstrim.timer
 print_success "TRIM habilitado para SSD"
-
-# Deshabilitar compositor de MATE (si existe)
 gsettings set org.mate.Marco.general compositing-manager false 2>/dev/null || print_warning "MATE no encontrado, saltando compositor"
 
 # ============================================
 # 8. OPTIMIZACIONES DE GRUB (NVIDIA NOUVEAU)
 # ============================================
 print_info "Verificando GPU..."
-
 if lspci | grep -i nvidia > /dev/null; then
     print_info "GPU NVIDIA detectada, configurando parámetros de Nouveau..."
-    
-    # Backup de GRUB
     sudo cp /etc/default/grub /etc/default/grub.backup
-    
-    # Agregar parámetros de Nouveau si no existen
     if ! grep -q "nouveau.config=NvClkMode=auto" /etc/default/grub; then
         sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 nouveau.config=NvClkMode=auto nouveau.noaccel=0"/' /etc/default/grub
         sudo update-grub
@@ -343,7 +295,6 @@ fi
 # 9. CREAR ENTRADA DE BSPWM EN LIGHTDM/GDM
 # ============================================
 print_info "Creando entrada de BSPWM en el gestor de sesiones..."
-
 sudo tee /usr/share/xsessions/bspwm.desktop > /dev/null << 'BSPWM_DESKTOP'
 [Desktop Entry]
 Name=bspwm
@@ -351,24 +302,192 @@ Comment=Binary space partitioning window manager
 Exec=bspwm
 Type=Application
 BSPWM_DESKTOP
-
 print_success "Entrada de BSPWM creada"
 
 # ============================================
-# 10. RESUMEN FINAL
+# 10. NEOVIM + NVCHAD
+# ============================================
+print_info "Instalando Neovim + NvChad..."
+sudo apt install -y neovim
+if [ ! -d "$HOME/.config/nvim" ]; then
+    git clone https://github.com/NvChad/starter ~/.config/nvim --depth 1
+    print_success "NvChad instalado (abrí nvim para completar la instalación)"
+else
+    print_warning "~/.config/nvim ya existe, saltando NvChad"
+fi
+
+# ============================================
+# 11. HERRAMIENTAS DE TERMINAL
+# ============================================
+print_info "Instalando herramientas de terminal..."
+sudo apt install -y \
+    fzf \
+    lemonbar \
+    zsh-syntax-highlighting \
+    yt-dlp
+print_success "Herramientas de terminal instaladas"
+
+# ============================================
+# 12. GITHUB CLI
+# ============================================
+print_info "Instalando GitHub CLI..."
+if ! command -v gh &>/dev/null; then
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    sudo apt update -y && sudo apt install -y gh
+    print_success "GitHub CLI instalado"
+else
+    print_warning "GitHub CLI ya instalado"
+fi
+
+# ============================================
+# 13. BRAVE BROWSER
+# ============================================
+print_info "Instalando Brave Browser..."
+if ! command -v brave-browser &>/dev/null; then
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    sudo apt update -y && sudo apt install -y brave-browser
+    print_success "Brave Browser instalado"
+else
+    print_warning "Brave Browser ya instalado"
+fi
+
+# ============================================
+# 14. VSCODIUM
+# ============================================
+print_info "Instalando VSCodium..."
+if ! command -v codium &>/dev/null; then
+    wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor | sudo dd of=/usr/share/keyrings/vscodium-archive-keyring.gpg
+    echo 'deb [signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg] https://download.vscodium.com/debs vscodium main' | sudo tee /etc/apt/sources.list.d/vscodium.list
+    sudo apt update -y && sudo apt install -y codium
+    print_success "VSCodium instalado"
+else
+    print_warning "VSCodium ya instalado"
+fi
+
+# ============================================
+# 15. PROTON MAIL + PROTON VPN
+# ============================================
+print_info "Instalando Proton Mail y ProtonVPN..."
+# Proton Mail (deb desde releases oficiales)
+if ! dpkg -l proton-mail &>/dev/null; then
+    PROTON_MAIL_URL=$(curl -s https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4 | head -1)
+    if [ -n "$PROTON_MAIL_URL" ]; then
+        wget -O /tmp/proton-mail.deb "$PROTON_MAIL_URL"
+        sudo apt install -y /tmp/proton-mail.deb
+        rm /tmp/proton-mail.deb
+        print_success "Proton Mail instalado"
+    else
+        print_warning "No se pudo obtener la URL de Proton Mail, instalá manualmente desde https://proton.me/mail/bridge"
+    fi
+else
+    print_warning "Proton Mail ya instalado"
+fi
+# ProtonVPN
+if ! dpkg -l protonvpn-stable-release &>/dev/null; then
+    wget -O /tmp/protonvpn-stable-release.deb "https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.6_all.deb"
+    sudo apt install -y /tmp/protonvpn-stable-release.deb
+    sudo apt update -y && sudo apt install -y proton-vpn-gnome-desktop
+    rm /tmp/protonvpn-stable-release.deb
+    print_success "ProtonVPN instalado"
+else
+    print_warning "ProtonVPN ya instalado"
+fi
+
+# ============================================
+# 16. BITWARDEN
+# ============================================
+print_info "Instalando Bitwarden..."
+if ! dpkg -l bitwarden &>/dev/null; then
+    BW_URL=$(curl -s https://api.github.com/repos/bitwarden/clients/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4 | head -1)
+    if [ -n "$BW_URL" ]; then
+        wget -O /tmp/bitwarden.deb "$BW_URL"
+        sudo apt install -y /tmp/bitwarden.deb
+        rm /tmp/bitwarden.deb
+        print_success "Bitwarden instalado"
+    else
+        print_warning "No se pudo obtener la URL de Bitwarden, instalá manualmente desde https://bitwarden.com/download"
+    fi
+else
+    print_warning "Bitwarden ya instalado"
+fi
+
+# ============================================
+# 17. OBSIDIAN
+# ============================================
+print_info "Instalando Obsidian..."
+if ! dpkg -l obsidian &>/dev/null; then
+    OBS_URL=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4 | head -1)
+    if [ -n "$OBS_URL" ]; then
+        wget -O /tmp/obsidian.deb "$OBS_URL"
+        sudo apt install -y /tmp/obsidian.deb
+        rm /tmp/obsidian.deb
+        print_success "Obsidian instalado"
+    else
+        print_warning "No se pudo obtener la URL de Obsidian, instalá manualmente desde https://obsidian.md"
+    fi
+else
+    print_warning "Obsidian ya instalado"
+fi
+
+# ============================================
+# 18. DOCKER COMPOSE + PODMAN + BUILDAH
+# ============================================
+print_info "Instalando Docker Compose, Podman y Buildah..."
+sudo apt install -y docker-compose podman podman-docker buildah
+print_success "Docker Compose, Podman y Buildah instalados"
+
+# ============================================
+# 19. GOLANG 1.24
+# ============================================
+print_info "Instalando Go 1.24..."
+sudo apt install -y golang-1.24-go golang-go
+print_success "Go 1.24 instalado"
+
+# ============================================
+# 20. OPENJDK 25
+# ============================================
+print_info "Instalando OpenJDK 25..."
+sudo apt install -y openjdk-25-jdk
+print_success "OpenJDK 25 instalado"
+
+# ============================================
+# 21. VOLATILITY3
+# ============================================
+print_info "Instalando Volatility3..."
+sudo apt install -y volatility3
+print_success "Volatility3 instalado"
+
+# ============================================
+# 22. LIMPIAR LAUNCHERS HUÉRFANOS
+# ============================================
+print_info "Limpiando launchers huérfanos..."
+sudo rm -f /usr/share/applications/native-sqlitebrowser.desktop \
+           /usr/share/applications/vim.desktop
+print_success "Launchers huérfanos eliminados"
+
+# ============================================
+# 23. RESUMEN FINAL
 # ============================================
 echo ""
 echo -e "${GREEN}╔═══════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║     ✅ INSTALACIÓN COMPLETADA            ║${NC}"
+echo -e "${GREEN}║        ✅ INSTALACIÓN COMPLETADA          ║${NC}"
 echo -e "${GREEN}╚═══════════════════════════════════════════╝${NC}"
 echo ""
 print_info "Configuración instalada:"
-echo "  🪟 Window Manager: BSPWM"
-echo "  🎨 Terminal: Kitty"
-echo "  🐚 Shell: ZSH (Oh My Zsh + Powerlevel10k)"
-echo "  📊 Bar: Polybar (tema: shapes)"
-echo "  🌐 Ethernet: $ETH_INTERFACE"
-echo "  📶 WiFi: $WIFI_INTERFACE"
+echo "  🪟  Window Manager : BSPWM"
+echo "  🎨  Terminal       : Kitty"
+echo "  🐚  Shell          : ZSH (Oh My Zsh + Powerlevel10k)"
+echo "  📊  Bar            : Polybar (tema: shapes)"
+echo "  🌐  Ethernet       : $ETH_INTERFACE"
+echo "  📶  WiFi           : $WIFI_INTERFACE"
+echo "  🔒  VPN            : ProtonVPN"
+echo "  📝  Editor         : Neovim + NvChad / VSCodium"
+echo "  🐳  Containers     : Docker Compose / Podman / Buildah"
+echo "  🔍  Forense        : Volatility3"
+echo "  ☕  Java           : OpenJDK 25"
+echo "  🐹  Go             : 1.24"
 echo ""
 print_warning "IMPORTANTE: Reiniciá el sistema para aplicar todos los cambios"
 print_info "Después del reinicio, seleccioná 'bspwm' en el gestor de sesiones"
