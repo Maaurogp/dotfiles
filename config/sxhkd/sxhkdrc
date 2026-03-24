@@ -148,17 +148,29 @@ ctrl + shift + Down
 ctrl + shift + m
 	pamixer --toggle-mute
 
-# ScreenShots
-@Print
-	flameshot full
 
-ctrl + @Print
-	flameshot gui
-
-# Obsidian
+# Abrir Obsidian
 super + shift + o
-	obsidian
+    obsidian
 
-# Obsidian
-super + shift + o
-	obsidian
+# Abrir Brave
+ctrl + shift + b
+    brave-browser
+
+
+# Flameshot screenshot
+ctrl + shift + f
+    flameshot gui
+
+
+# Abrir ProtonMail
+super + shift + m
+    gtk-launch proton-mail
+
+# Abrir Bitwarden
+ctrl + alt + b
+    gtk-launch bitwarden
+
+# Abrir Virtual Manager 
+super + shift + v
+    virt-manager
