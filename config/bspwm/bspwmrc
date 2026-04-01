@@ -25,3 +25,15 @@ setxkbmap -layout us,es -variant , -option grp:alt_shift_toggle
 feh --bg-fill ~/Wallpapers/archkali.png &
 ~/.config/polybar/./launch.sh --shapes &
 picom --config ~/.config/picom/picom.conf &
+bspc rule -a '*' state=fullscreen border=off
+
+# Hook para ocultar polybar en fullscreen
+bspc subscribe node_state | while read -r _ _ _ _ state flag; do
+    if [ "$state" = "fullscreen" ]; then
+        if [ "$flag" = "on" ]; then
+            polybar-msg cmd hide
+        else
+            polybar-msg cmd show
+        fi
+    fi
+done &
