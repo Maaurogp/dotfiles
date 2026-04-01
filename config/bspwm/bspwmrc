@@ -1,7 +1,8 @@
 #!/bin/sh
 pgrep -x sxhkd > /dev/null || sxhkd &
-xrandr --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output VGA-1 --mode 1920x1080 --pos 1920+0 --output LVDS-1 --off
-bspc monitor DP-2 -d I II III IV V
+xrandr --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output VGA-1 --mode 1920x1080 --pos 1920x0 --output LVDS-1 --off
+bspc monitor LVDS-1 -d I II III IV V VI VII VIII IX X 2>/dev/null
+bspc monitor DP-2 -d I II III IV V 2>/dev/null
 bspc monitor VGA-1 -d VI VII VIII IX X
 #bspc rule -a '*' monitor='VGA-1' state=fullscreen
 bspc config border_width 0
