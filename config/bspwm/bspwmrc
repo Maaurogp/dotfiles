@@ -1,10 +1,31 @@
 #!/bin/sh
 pgrep -x sxhkd > /dev/null || sxhkd &
-xrandr --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output VGA-1 --mode 1920x1080 --pos 1920x0 --output LVDS-1 --off
-bspc monitor LVDS-1 -d I II III IV V VI VII VIII IX X 2>/dev/null
-bspc monitor DP-2 -d I II III IV V 2>/dev/null
-bspc monitor VGA-1 -d VI VII VIII IX X
-#bspc rule -a '*' monitor='VGA-1' state=fullscreen
+
+# Detectar monitores conectados
+DP2=$(xrandr -q | grep "DP-2 connected")
+VGA1=$(xrandr -q | grep "VGA-1 connected")
+LVDS1=$(xrandr -q | grep "LVDS-1 connected")
+
+# Configurar monitores según lo detectado
+if [ -n "$DP2" ] && [ -n "$VGA1" ]; then
+    # Ambos monitores externos conectados
+    xrandr --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output VGA-1 --mode 1920x1080 --pos 1920x0 --output LVDS-1 --off
+    bspc monitor DP-2 -d I II III IV V
+    bspc monitor VGA-1 -d VI VII VIII IX X
+elif [ -n "$DP2" ]; then
+    # Solo DP-2 conectado
+    xrandr --output DP-2 --primary --mode 1920x1080 --pos 0x0 --output VGA-1 --off --output LVDS-1 --off
+    bspc monitor DP-2 -d I II III IV V VI VII VIII IX X
+elif [ -n "$VGA1" ]; then
+    # Solo VGA-1 conectado
+    xrandr --output VGA-1 --primary --mode 1920x1080 --pos 0x0 --output DP-2 --off --output LVDS-1 --off
+    bspc monitor VGA-1 -d I II III IV V VI VII VIII IX X
+elif [ -n "$LVDS1" ]; then
+    # Solo notebook (LVDS-1)
+    xrandr --output LVDS-1 --primary --mode 1920x1080 --pos 0x0 --output DP-2 --off --output VGA-1 --off
+    bspc monitor LVDS-1 -d I II III IV V VI VII VIII IX X
+fi
+
 bspc config border_width 0
 bspc config window_gap 10
 bspc config split_ratio 0.50
@@ -25,15 +46,3 @@ setxkbmap -layout us,es -variant , -option grp:alt_shift_toggle
 feh --bg-fill ~/Wallpapers/archkali.png &
 ~/.config/polybar/./launch.sh --shapes &
 picom --config ~/.config/picom/picom.conf &
-bspc rule -a '*' state=fullscreen border=off
-
-# Hook para ocultar polybar en fullscreen
-bspc subscribe node_state | while read -r _ _ _ _ state flag; do
-    if [ "$state" = "fullscreen" ]; then
-        if [ "$flag" = "on" ]; then
-            polybar-msg cmd hide
-        else
-            polybar-msg cmd show
-        fi
-    fi
-done &

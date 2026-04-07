@@ -19,7 +19,7 @@ launch_bar() {
 		if [ -n "$DP2" ] || [ -n "$VGA1" ]; then
 			# Monitores externos: usar config personalizada
 			[ -n "$DP2" ] && MONITOR=DP-2 polybar -q main -c "$dir/$style/config.ini" &
-			[ -n "$VGA1" ] && MONITOR=VGA-1 polybar -q main -c "$dir/$style/config.ini" &
+			[ -n "$VGA1" ] && MONITOR=VGA-1 polybar -q secondary -c "$dir/$style/config.ini" &
 		else
 			# Solo notebook: usar config original del repo
 			MONITOR=LVDS-1 polybar -q main -c "$dir/$style/config.ini" &
