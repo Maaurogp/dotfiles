@@ -46,3 +46,26 @@ setxkbmap -layout us,es -variant , -option grp:alt_shift_toggle
 feh --bg-fill ~/Wallpapers/archkali.png &
 ~/.config/polybar/./launch.sh --shapes &
 picom --config ~/.config/picom/picom.conf &
+
+
+# Ocultar polybar en fullscreen
+bspc subscribe node_state | while read -r _ _ _ _ state flag; do
+    if [ "$state" = "fullscreen" ]; then
+        if [ "$flag" = "on" ]; then
+            polybar-msg cmd hide 2>/dev/null
+        else
+            polybar-msg cmd show 2>/dev/null
+        fi
+    fi
+done &
+
+# Ocultar polybar en fullscreen
+bspc subscribe node_state | while read -r _ _ _ _ state flag; do
+    if [ "$state" = "fullscreen" ]; then
+        if [ "$flag" = "on" ]; then
+            polybar-msg cmd hide 2>/dev/null
+        else
+            polybar-msg cmd show 2>/dev/null
+        fi
+    fi
+done &
